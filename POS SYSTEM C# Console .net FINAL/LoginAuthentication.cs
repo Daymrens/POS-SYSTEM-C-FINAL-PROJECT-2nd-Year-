@@ -31,7 +31,8 @@ namespace DisplaMenu_Test
             else
             {
                 Console.SetCursorPosition(0, 2);
-                Console.WriteLine("Invalid login credentials! Please try again.");                
+                Console.WriteLine("Invalid login credentials! Please try again.");
+                ExecuteFunctions.ClearLines(12, 20, 12);
                 return false;
             }
         }

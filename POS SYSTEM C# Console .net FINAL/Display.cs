@@ -10,6 +10,7 @@ using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using static DisplaMenu_Test.Program;
 
 
@@ -21,22 +22,24 @@ namespace POS___POS
         private LoginAuthentication authentication;
         private ExecuteFunctions execute;
         private Inventory inventory;
-        public int index {  get; set; }
-                
+        public static int i = 0;
+        private static CancellationTokenSource cancellationTokenSource;
+
+
 
         public Display(LoginAuthentication authentication, ExecuteFunctions execute, Inventory inventory)
         {
             this.authentication = authentication;
-            this.execute = execute; 
+            this.execute = execute;
             this.inventory = inventory;
         }
 
         #region Display Logo Section
-        public  void DisplayLogo()
+        public void DisplayLogo()
         {
             #region LOGO
             Console.ForegroundColor = ConsoleColor.DarkMagenta;
-            Console.SetWindowSize(135, 30);            
+            Console.SetWindowSize(135, 30);
             int startingY = 16;
             Console.SetCursorPosition(startingY, 7);
             Console.WriteLine("██████╗  ██████╗ ██╗███╗   ██╗████████╗     ██████╗ ███████╗    ███████╗ █████╗ ██╗     ███████╗███████╗");
@@ -75,7 +78,7 @@ namespace POS___POS
             Console.SetCursorPosition(startingY + 6, 18);
             Console.WriteLine("                                 ╚██╗╚██████╗╚██╔═██╔╝██╔╝");
             Thread.Sleep(100);
-            Console.SetCursorPosition(startingY + 6, 19); 
+            Console.SetCursorPosition(startingY + 6, 19);
             Console.WriteLine("                                  ╚═╝ ╚═════╝ ╚═╝ ╚═╝ ╚═╝");
             Thread.Sleep(100);
             ConsoleKeyInfo keyInfo;
@@ -88,7 +91,7 @@ namespace POS___POS
                 string[] prompt = { "Opening System", "Stacking Items", "Preparing Store" };
                 Console.SetCursorPosition(45, 21);
                 Console.Write("Press [Enter] to open system  [Esc] to exit");
-               
+
 
                 Console.ResetColor(); // Reset the console color to the default
 
@@ -96,15 +99,15 @@ namespace POS___POS
                 Console.ResetColor();
                 if (keyInfo.Key == ConsoleKey.Enter)
                 {
-                    Console.SetCursorPosition(0, 22);                    
-                    DisplayLoadingScreen(prompt,0, 20);                    
-                    execute.ClearLines(22, 23, 0);
+                    Console.SetCursorPosition(0, 22);
+                    DisplayLoadingScreen(prompt, 0, 20);
+                    ExecuteFunctions.ClearLines(22, 23, 0);
                     Console.SetCursorPosition(0, 22);
                     DisplayLoadingScreen(prompt, 1, 20);
-                    execute.ClearLines(22, 23, 0);
+                    ExecuteFunctions.ClearLines(22, 23, 0);
                     Console.SetCursorPosition(0, 22);
                     DisplayLoadingScreen(prompt, 2, 20);
-                    execute.ClearLines(22, 23, 0);
+                    ExecuteFunctions.ClearLines(22, 23, 0);
                     // Continue with the rest of your program or main logic
                     Console.SetCursorPosition(0, 23);
                     Console.WriteLine("System is ready. Welcome to the Point of Sale!");
@@ -119,26 +122,26 @@ namespace POS___POS
                 else
                 {
                     Console.WriteLine("Invalid!");
-                    execute.ClearLines(21, 22, 0);
-                    
-                }
-                
-            }while (keyInfo.Key != ConsoleKey.Enter || keyInfo.Key != ConsoleKey.Escape);
+                    ExecuteFunctions.ClearLines(21, 22, 0);
 
-         
+                }
+
+            } while (keyInfo.Key != ConsoleKey.Enter || keyInfo.Key != ConsoleKey.Escape);
+
+
 
         }
-       
 
-        public static void DisplayLoadingScreen(string[] message,int index, int dotsCount)
+
+        public static void DisplayLoadingScreen(string[] message, int index, int dotsCount)
         {
             Console.WriteLine($"Please wait: {message[index]} ");
             for (int i = 0; i < dotsCount; i++)
             {
                 Console.Write(".");
                 Thread.Sleep(100); // Adjust the delay duration as needed
-                
-            }           
+
+            }
 
             Console.WriteLine(); // Move to the next line after the loading dots
         }
@@ -148,7 +151,7 @@ namespace POS___POS
 
 
         #region Display AdminBox
-        public static void DisplayAdminBox() 
+        public static void DisplayAdminBox()
         {
             int startingY = 0;
             int startingX = 0;
@@ -159,10 +162,10 @@ namespace POS___POS
             Console.SetCursorPosition(startingY, startingX);
             for (int i = 0; i < 65; i++)
             {
-                 
+
                 Console.Write("═");
             }
-            
+
             startingX = 5;
             startingY = 14;
             Console.SetCursorPosition(startingY, startingX);
@@ -174,35 +177,35 @@ namespace POS___POS
             Console.SetCursorPosition(startingY, startingX);
             for (int i = 0; i < 65; i++)
             {
-                
+
                 Console.Write("═");
             }
-            
+
             //left
             startingY = 15;
             startingX = 5;
             Console.SetCursorPosition(startingY, startingX);
             for (int i = 0; i < 5; i++, startingX++)
             {
-               
+
                 Console.SetCursorPosition(startingY, startingX);
                 Console.WriteLine("║");
             }
-            
+
 
             //right
             startingX = 5;
             startingY = 80;
             for (int i = 0; i < 5; i++, startingX++)
             {
-               
+
                 Console.SetCursorPosition(startingY, startingX);
                 Console.WriteLine("║");
             }
-            
+
 
             //corners
-           
+
             Console.SetCursorPosition(15, 5);
             Console.Write("╔");
             Console.SetCursorPosition(15, 10);
@@ -211,7 +214,7 @@ namespace POS___POS
             Console.Write("╗");
             Console.SetCursorPosition(80, 10);
             Console.Write("╝");
-            
+
 
         }
         #endregion
@@ -219,7 +222,7 @@ namespace POS___POS
 
         #region Display Main Menu
         public static void DisplayMenu(Inventory product)
-        {            
+        {
             if (product.MainMenuEn == true)
             {
                 string[] currentMenu = product.CurrentLinesSubMenu == 0 ? product.MainMenu : product.ListMenuEmployee;
@@ -228,7 +231,7 @@ namespace POS___POS
                 Console.SetCursorPosition(startingY, 3);
                 Console.WriteLine("                    CONSOLE - POS - SYSTEM - C# ");
                 Console.ResetColor();
-               
+
                 for (int i = 0; i < 65; i++)
                 {
                     Console.SetCursorPosition(startingY + i, 4);
@@ -239,10 +242,10 @@ namespace POS___POS
                     Console.Write("═");
                 }
 
-                Console.SetCursorPosition(startingY, 5);                
+                Console.SetCursorPosition(startingY, 5);
                 Console.WriteLine("                M   A   I   N    *    M   E   N   U              ");
                 Console.ResetColor();
-                
+
                 Console.SetCursorPosition(startingY, 5);
                 for (int k = 0; k < 8; k++)
                 {
@@ -253,7 +256,7 @@ namespace POS___POS
                     Console.SetCursorPosition(startingY + 65, 5 + k);
                 }
                 Console.ResetColor();
-                
+
                 for (int j = 0; j < product.MainMenu.Length; j++)
                 {
 
@@ -278,10 +281,10 @@ namespace POS___POS
                 Console.SetCursorPosition(startingY + 65, 12);
                 Console.Write("╝");
 
-                
+
             }
-         
-           
+
+
         }
         #endregion
 
@@ -289,13 +292,13 @@ namespace POS___POS
         #region Display Products Section
         public static void DisplayProducts(Inventory product, LoginAuthentication authentication)
         {
-            
 
-          
+
+
             int startingY = 55; // Starting position for Y-coordinate
             //int totalPages = (int)Math.Ceiling((double)product.ProductNames.Count / 10);
             Console.ForegroundColor = ConsoleColor.White;
-           
+
             if (authentication.IsAdminLogin == true)
             {
                 Console.SetWindowSize(140, 30);
@@ -327,8 +330,8 @@ namespace POS___POS
                 Console.WriteLine("╚═══════════════════════════════════════════════════════════════════════════╝");
                 Console.WriteLine("");
             }
-             //inventory
-            else if(product.CurrentLinesMenu == 2)
+            //inventory
+            else if (product.CurrentLinesMenu == 2)
             {
                 Console.SetWindowSize(166, 38);
                 Console.SetCursorPosition(startingY, 3);
@@ -357,7 +360,7 @@ namespace POS___POS
                 Console.WriteLine("╚═══════════════════════════════════════════════════════════════════════════╝");
                 Console.WriteLine("");
             }
-            else if(product.CurrentLinesMenu == 0)
+            else if (product.CurrentLinesMenu == 0)
             {
                 Console.SetWindowSize(166, 38);
                 Console.SetCursorPosition(startingY, 3);
@@ -471,58 +474,58 @@ namespace POS___POS
         #region Display Cart Section
         public static void DisplayCartDetails(Inventory inventory)
         {
-                inventory.InCart = true;
-                Display.DisplayHeader(inventory);
-                Console.SetBufferSize(340, 200);
+            inventory.InCart = true;
+            Display.DisplayHeader(inventory);
+            Console.SetBufferSize(340, 200);
             Console.SetCursorPosition(140, 42);
             int startingY = 50;
-                Console.SetCursorPosition(startingY, 3);
-                Console.WriteLine("╔════════════════════════════════════════════════════════════════════════════╗");
-                Console.SetCursorPosition(startingY, 4);
-                Console.WriteLine("║         C    A    R    T           D    E    T    A    I    L    S         ║");
-                Console.SetCursorPosition(startingY, 5);
-                Console.WriteLine("╠════════════════════════════════════════════════════════════════════════════╣");
-                Console.SetCursorPosition(startingY, 6);
-                Console.WriteLine("║ {0,-10} {1,-35} {2,-11} {3,-15} ║", " No.", "   Product Name", "Quantity", "     Price");
-                Console.SetCursorPosition(startingY, 7);
-                Console.WriteLine("╠═════════╤══════════════════════════════════╤═══════════════╤═══════════════╣");
+            Console.SetCursorPosition(startingY, 3);
+            Console.WriteLine("╔════════════════════════════════════════════════════════════════════════════╗");
+            Console.SetCursorPosition(startingY, 4);
+            Console.WriteLine("║         C    A    R    T           D    E    T    A    I    L    S         ║");
+            Console.SetCursorPosition(startingY, 5);
+            Console.WriteLine("╠════════════════════════════════════════════════════════════════════════════╣");
+            Console.SetCursorPosition(startingY, 6);
+            Console.WriteLine("║ {0,-10} {1,-35} {2,-11} {3,-15} ║", " No.", "   Product Name", "Quantity", "     Price");
+            Console.SetCursorPosition(startingY, 7);
+            Console.WriteLine("╠═════════╤══════════════════════════════════╤═══════════════╤═══════════════╣");
 
 
-                for (int i = 0; i < inventory.CartItems.Count; i++)
+            for (int i = 0; i < inventory.CartItems.Count; i++)
+            {
+                var cartItem = inventory.CartItems[i];
+                //int itemIndex = inventory.ProductNames.IndexOf(cartItem.productName);
+
+                int startIndex = 0;
+                int endIndex = startIndex + inventory.ProductNames.Count;
+
+
+                int itemIndex = startIndex + i;
+                if (endIndex == inventory.CurrentLineCart)
                 {
-                    var cartItem = inventory.CartItems[i];
-                    //int itemIndex = inventory.ProductNames.IndexOf(cartItem.productName);
-
-                    int startIndex = 0;
-                    int endIndex = startIndex + inventory.ProductNames.Count;
-
-
-                    int itemIndex = startIndex + i;
-                    if (endIndex == inventory.CurrentLineCart)
-                    {
-                        Console.BackgroundColor = ConsoleColor.Blue;
-                        Console.ForegroundColor = ConsoleColor.Black;
-                    }
-                    Console.SetCursorPosition(startingY, i + 8);
-                    string line = "│";
-                    Console.Write("{0, -10}", line);
-                    Console.SetCursorPosition(startingY, i + 8);
-                    Console.Write("║  {0,-10}  {1, -37} {2,-13} {3,-9} ║",
-                    i + 1, cartItem.productName, cartItem.quantityInCart, cartItem.price);
+                    Console.BackgroundColor = ConsoleColor.Blue;
+                    Console.ForegroundColor = ConsoleColor.Black;
                 }
-                Console.SetCursorPosition(startingY, inventory.CartItems.Count + 8);
-                Console.WriteLine("╠═════════╧══════════════════════════════════╧═══════════════╧═══════════════╣");
-                Console.SetCursorPosition(startingY, inventory.CartItems.Count + 9);
-                Console.WriteLine("║ ESC to return to Main Menu.                                                ║");
-                Console.SetCursorPosition(startingY, inventory.CartItems.Count + 10);
-                Console.WriteLine("║════════════════════════════════════════════════════════════════════════════║");
-                Console.SetCursorPosition(startingY, inventory.CartItems.Count + 11);
-                Console.WriteLine("║ Press 'M' - Modify Quantity   Press 'R' - Remove Item                      ║");
-                Console.SetCursorPosition(startingY, inventory.CartItems.Count + 12);
-                Console.WriteLine("║ Press 'C' - Proceed to Checkout                                            ║");
-                Console.SetCursorPosition(startingY, inventory.CartItems.Count + 13);
-                Console.WriteLine("╚════════════════════════════════════════════════════════════════════════════╝");
-            
+                Console.SetCursorPosition(startingY, i + 8);
+                string line = "│";
+                Console.Write("{0, -10}", line);
+                Console.SetCursorPosition(startingY, i + 8);
+                Console.Write("║  {0,-10}  {1, -37} {2,-13} {3,-9} ║",
+                i + 1, cartItem.productName, cartItem.quantityInCart, cartItem.price);
+            }
+            Console.SetCursorPosition(startingY, inventory.CartItems.Count + 8);
+            Console.WriteLine("╠═════════╧══════════════════════════════════╧═══════════════╧═══════════════╣");
+            Console.SetCursorPosition(startingY, inventory.CartItems.Count + 9);
+            Console.WriteLine("║ ESC to return to Main Menu.                                                ║");
+            Console.SetCursorPosition(startingY, inventory.CartItems.Count + 10);
+            Console.WriteLine("║════════════════════════════════════════════════════════════════════════════║");
+            Console.SetCursorPosition(startingY, inventory.CartItems.Count + 11);
+            Console.WriteLine("║ Press 'M' - Modify Quantity   Press 'R' - Remove Item                      ║");
+            Console.SetCursorPosition(startingY, inventory.CartItems.Count + 12);
+            Console.WriteLine("║ Press 'C' - Proceed to Checkout                                            ║");
+            Console.SetCursorPosition(startingY, inventory.CartItems.Count + 13);
+            Console.WriteLine("╚════════════════════════════════════════════════════════════════════════════╝");
+
         }
         public static void DisplayCart(Inventory product)
         {
@@ -606,11 +609,34 @@ namespace POS___POS
                 }
                 Console.BackgroundColor = ConsoleColor.Black;
                 Console.ForegroundColor = ConsoleColor.DarkMagenta;
+                Console.SetCursorPosition(0, 1);
                 Console.WriteLine(new string('█', Console.WindowWidth));
+                
+                
                 Console.ResetColor();
             }
-            
+
         }
+        //private static void ContinuousDisplay()
+        //{
+        //    int i = 0;
+        //    while (true)
+        //    {
+                
+        //        string first = "P";
+        //        string second = "O";
+        //        string third = "S";
+        //        Console.ForegroundColor = ConsoleColor.White;
+        //        Console.BackgroundColor = ConsoleColor.DarkMagenta;
+        //        Console.SetCursorPosition(0 + i, 1);
+        //        Console.Write("{0}{1}{2}", first, second, third);
+        //        Thread.Sleep(100);
+        //        Console.ResetColor();
+        //        ExecuteFunctions.ClearLines(1, 1, 0);
+                
+        //        i = (i + 1) % 95; // Wrap around when reaching the end
+        //    }
+        //}
         #endregion
 
 
@@ -618,7 +644,7 @@ namespace POS___POS
 
         public static void DisplayReceipt(Inventory inventory, string cashierName)
         {
-            
+
             Console.SetBufferSize(340, 200);
             if (inventory.IsCheckout == true || inventory.OnCheckout == true)
             {
@@ -663,7 +689,7 @@ namespace POS___POS
                     Console.WriteLine("║");
                     Thread.Sleep(100);
                 }
-                
+
 
                 Console.SetCursorPosition(0, 12);
                 Console.WriteLine($"║                   {shopName,-47}║");
@@ -750,12 +776,12 @@ namespace POS___POS
                 Thread.Sleep(100);
                 Console.SetCursorPosition(2, inventory.CartItems.Count + 28);
 
-               
-               
-               
 
-              
-              
+
+
+
+
+
             }
         }
 
@@ -771,40 +797,85 @@ namespace POS___POS
 
 
         #region Display About Us
+
+        public static void StopDisplay()
+        {
+            cancellationTokenSource?.Cancel();
+        }
+        public static void DisplayAnimationAbout(CancellationTokenSource cancellationToken)
+        {
+            ConsoleKeyInfo keyInfo;
+            Console.ForegroundColor = ConsoleColor.Magenta;
+
+            string[] dAbout = new string[]
+            {
+            " █████  ██████   ██████  ██    ██ ████████     ██    ██ ███████",
+            "██   ██ ██   ██ ██    ██ ██    ██    ██        ██    ██ ██     ",
+            "███████ ██████  ██    ██ ██    ██    ██        ██    ██ ███████",
+            "██   ██ ██   ██ ██    ██ ██    ██    ██        ██    ██      ██",
+            "██   ██ ██████   ██████   ██████     ██         ██████  ███████"
+            };
+
+            int i = 0;
+
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                Console.SetCursorPosition(0 + i, 0);
+                Console.Write(dAbout[0]);
+                Console.SetCursorPosition(0 + i, 1);
+                Console.Write(dAbout[1]);
+                Console.SetCursorPosition(0 + i, 2);
+                Console.Write(dAbout[2]);
+                Console.SetCursorPosition(0 + i, 3);
+                Console.Write(dAbout[3]);
+                Console.SetCursorPosition(0 + i, 4);
+                Console.Write(dAbout[4]);
+                Thread.Sleep(100);
+                ExecuteFunctions.ClearLines(0, 4, 0);
+
+                if (Console.KeyAvailable)
+                {
+                    keyInfo = Console.ReadKey(true);
+                    if (keyInfo.Key == ConsoleKey.Escape)
+                    {
+                        StopDisplay();
+                        break; // Exit the loop if 'Escape' key is pressed
+                        
+                    }
+                }
+
+                i = (i + 1) % 95; // Adjusted to prevent i from going beyond 95
+            }
+        }
+
         public static void DisplayAboutUs()
         {
             Inventory.InAboutUs = true;
-            Console.ForegroundColor = ConsoleColor.Magenta;            
-            Console.WriteLine(@"
- █████  ██████   ██████  ██    ██ ████████     ██    ██ ███████ 
-██   ██ ██   ██ ██    ██ ██    ██    ██        ██    ██ ██      
-███████ ██████  ██    ██ ██    ██    ██        ██    ██ ███████ 
-██   ██ ██   ██ ██    ██ ██    ██    ██        ██    ██      ██ 
-██   ██ ██████   ██████   ██████     ██         ██████  ███████                                                                                                                               
-");
+
             Console.ResetColor();
             Console.WriteLine("=============================================");
-            Console.WriteLine("Welcome to our Point of Sale (POS) System!");
+            Console.WriteLine("\n\n\n\nWelcome to our Point of Sale (POS) System!");
             Console.WriteLine("This system is developed by the following individuals:");
 
             // Display developer information and contributions
-            DisplayDeveloperInformation("Dime Renz Apor", "Lead Developer");
-            DisplayDeveloperInformation("Drew Xanarie Baroro", "Frontend Developer");
-            DisplayDeveloperInformation("Keisha Lyn Tampus", "Database Developer");
-            DisplayDeveloperInformation("Daryl Generalao", "Backend Developer");
-            DisplayDeveloperInformation("Ken Marande", "Tester");
+            DisplayDeveloperInformation("Dime Renz Apor", "LEAD DEVELOPER / DEBUGGER / CODER");
+            DisplayDeveloperInformation("Keisha Lyn Tampus", "PROJECT MANAGER / DEBUGGER / CODER");
+            DisplayDeveloperInformation("Drew Xanarie Baroro", "BACKEND DEVELOPER / DEBUGGER / CODER\t");
+            DisplayDeveloperInformation("Ken Marande", "FRONTENT DEVELOPER / LAYOUT DESIGN / CODER");
+            DisplayDeveloperInformation("Daryl Generalao", "TESTER / QUALITY ASSURANCE  / CODER");
 
             Console.WriteLine("\nThank you for using our POS System!");
             Console.WriteLine("Press 'ESC' to return to the Main Menu...");
-           
-            
+            cancellationTokenSource = new CancellationTokenSource();
+            Task.Run(() => DisplayAnimationAbout(cancellationTokenSource));
         }
 
         private static void DisplayDeveloperInformation(string developerName, string role)
-        {
-            Console.WriteLine($"- {developerName}: {role}");
+            {
+                Console.WriteLine($"- {developerName}: {role}");
+            }
+            #endregion
         }
-        #endregion
+
     }
 
-}

@@ -677,7 +677,7 @@ namespace DisplaMenu_Test
         {
             return index >= 0 && index < inventory.ProductNames.Count;
         }        
-        public void ClearLines(int startLine, int endLine, int leftPosition)
+        public static void ClearLines(int startLine, int endLine, int leftPosition)
         {
             for (int i = startLine; i <= endLine; i++)
             {
@@ -985,7 +985,6 @@ namespace DisplaMenu_Test
 
                 case Constants.AboutUs:
                     Display.DisplayAboutUs();
-
                     break;
                 case Constants.InventoryMenuOption:
                     Display.DisplayProducts(inventory, authentication);
@@ -1015,7 +1014,7 @@ namespace DisplaMenu_Test
                 Display.DisplayAdminBox();
                 Console.SetCursorPosition(17, 12);
                 authentication.Password = ExecuteFunctions.GetMaskedUserInput("Enter Administrator PIN: ");
-                ClearLines(2, 2, 2);
+                ClearLines(2, 2, 12);
             } while (!authentication.Authenticate(inventory));
 
             inventory.Admin = true;
@@ -1189,6 +1188,10 @@ namespace DisplaMenu_Test
                     }
                     Inventory.InAboutUs = false;
                     Console.SetWindowSize(90, 25);
+                    Display.StopDisplay();
+                    Display.DisplayMenu(inventory);
+                    Display.DisplayHeader(inventory);
+                    
                     break;
                 case ConsoleKey.E:
                     if (!inventory.IsCheckout && inventory.CurrentLinesMenu != 3)
