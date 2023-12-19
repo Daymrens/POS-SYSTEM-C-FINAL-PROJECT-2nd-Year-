@@ -996,7 +996,7 @@ namespace DisplaMenu_Test
                     Console.Clear();
                     inventory.MainMenuEn = true;
 
-                    Console.SetCursorPosition(50, 12);
+                    Console.SetCursorPosition(0, 12);
                     Console.WriteLine("Thank you for using our system!");
                     Environment.Exit(Constants.ExitApplicationCode);
                     break;
