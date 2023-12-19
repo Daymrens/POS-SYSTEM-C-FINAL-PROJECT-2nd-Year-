@@ -706,8 +706,8 @@ namespace POS___POS
                     Console.SetCursorPosition(3, 15);
                     Console.Write("Product");
                     Thread.Sleep(50);
-                    Console.SetCursorPosition(46, 15);
-                    Console.Write("  Price    SubTotal  ║");
+                    Console.SetCursorPosition(40, 15);
+                    Console.Write("Price      SubTotal  ");
                     Thread.Sleep(50);
                 }
 
@@ -732,7 +732,7 @@ namespace POS___POS
                     double itemTotal = item.quantityInCart * inventory.Price[i]; // Assuming Price is a list corresponding to each item
                     total += itemTotal;
 
-                    Console.WriteLine($"║ {item.quantityInCart} x {item.productName,-38}  P{inventory.Price[i],-10:0.00}P{itemTotal,4:0.00}");
+                    Console.WriteLine($"║ {item.quantityInCart} x {item.productName,-25}       P{inventory.Price[i],-10:0.00}  P{itemTotal,4:0.00}");
                     Thread.Sleep(50);
                 }
 
