@@ -611,9 +611,9 @@ namespace POS___POS
                 Console.ForegroundColor = ConsoleColor.DarkMagenta;
                 Console.SetCursorPosition(0, 1);
                 Console.WriteLine(new string('█', Console.WindowWidth));
-                
-                
-                Console.ResetColor();
+                //Task.Run(() => ContinuousDisplay());
+
+               Console.ResetColor();
             }
 
         }
@@ -622,18 +622,18 @@ namespace POS___POS
         //    int i = 0;
         //    while (true)
         //    {
-                
+
         //        string first = "P";
         //        string second = "O";
         //        string third = "S";
         //        Console.ForegroundColor = ConsoleColor.White;
-        //        Console.BackgroundColor = ConsoleColor.DarkMagenta;
+                
         //        Console.SetCursorPosition(0 + i, 1);
         //        Console.Write("{0}{1}{2}", first, second, third);
         //        Thread.Sleep(100);
         //        Console.ResetColor();
-        //        ExecuteFunctions.ClearLines(1, 1, 0);
-                
+        //        ExecuteFunctions.ClearLines(1, 1, 1);
+
         //        i = (i + 1) % 95; // Wrap around when reaching the end
         //    }
         //}
@@ -644,7 +644,7 @@ namespace POS___POS
 
         public static void DisplayReceipt(Inventory inventory, string cashierName)
         {
-
+            Console.Clear();
             Console.SetBufferSize(340, 200);
             if (inventory.IsCheckout == true || inventory.OnCheckout == true)
             {
@@ -654,32 +654,32 @@ namespace POS___POS
                 // Constants for shop details
                 const string shopName = "Asian College of Technology";
                 const string shopAddress = "Pantaleon del Rosario St, Cebu City, 6000 Cebu";
-
+                
                 Console.SetCursorPosition(0, 4);
                 Console.WriteLine("╔" + new string('═', 66) + "╗");
-                Thread.Sleep(100);
+                Thread.Sleep(50);
                 Console.SetCursorPosition(0, 5);
                 Console.WriteLine("                                                                    ");
-                Thread.Sleep(100);
+                Thread.Sleep(50);
                 Console.ForegroundColor = ConsoleColor.Magenta;
                 Console.SetCursorPosition(14, 6);
                 Console.WriteLine("██████╗ ██╗  ██╗██████╗ ██╗  ██╗██████╗");
-                Thread.Sleep(100);
+                Thread.Sleep(50);
                 Console.SetCursorPosition(14, 7);
                 Console.WriteLine("██╔══██╗██║ ██╔╝██╔══██╗██║ ██╔╝██╔══██╗");
-                Thread.Sleep(100);
+                Thread.Sleep(50);
                 Console.SetCursorPosition(14, 8);
                 Console.WriteLine("██║  ██║█████╔╝ ██║  ██║█████╔╝ ██║  ██║");
-                Thread.Sleep(100);
+                Thread.Sleep(50);
                 Console.SetCursorPosition(14, 9);
                 Console.WriteLine("██║  ██║██╔═██╗ ██║  ██║██╔═██╗ ██║  ██║");
-                Thread.Sleep(100);
+                Thread.Sleep(50);
                 Console.SetCursorPosition(14, 10);
                 Console.WriteLine("██████╔╝██║  ██╗██████╔╝██║  ██╗██████╔╝");
-                Thread.Sleep(000);
+                Thread.Sleep(50);
                 Console.SetCursorPosition(14, 11);
                 Console.WriteLine("╚═════╝ ╚═╝  ╚═╝╚═════╝ ╚═╝  ╚═╝╚═════╝");
-                Thread.Sleep(100);
+                Thread.Sleep(50);
                 Console.ResetColor();
                 for (int i = 0; i < 7; i++)
                 {
@@ -687,28 +687,28 @@ namespace POS___POS
                     Console.WriteLine("║");
                     Console.SetCursorPosition(67, 5 + i);
                     Console.WriteLine("║");
-                    Thread.Sleep(100);
+                    Thread.Sleep(50);
                 }
 
 
                 Console.SetCursorPosition(0, 12);
                 Console.WriteLine($"║                   {shopName,-47}║");
-                Thread.Sleep(100);
+                Thread.Sleep(50);
                 Console.SetCursorPosition(0, 13);
                 Console.WriteLine($"║           {shopAddress,-51}    ║");
-                Thread.Sleep(100);
+                Thread.Sleep(50);
                 Console.SetCursorPosition(0, 14);
                 Console.WriteLine("║" + "╔" + new string('═', 64) + "╗" + "║");
-                Thread.Sleep(100);
+                Thread.Sleep(50);
 
                 if (inventory.CartItems.Count > 0)
                 {
                     Console.SetCursorPosition(3, 15);
                     Console.Write("Product");
-                    Thread.Sleep(100);
+                    Thread.Sleep(50);
                     Console.SetCursorPosition(46, 15);
                     Console.Write("  Price    SubTotal  ║");
-                    Thread.Sleep(100);
+                    Thread.Sleep(50);
                 }
 
                 Console.SetCursorPosition(0, 16);
@@ -723,7 +723,7 @@ namespace POS___POS
                     Console.WriteLine("║");
                     Console.SetCursorPosition(67, 15 + y);
                     Console.WriteLine("║");
-                    Thread.Sleep(100);
+                    Thread.Sleep(50);
                 }
                 for (int i = 0; i < inventory.CartItems.Count; i++)
                 {
@@ -733,55 +733,48 @@ namespace POS___POS
                     total += itemTotal;
 
                     Console.WriteLine($"║ {item.quantityInCart} x {item.productName,-38}  P{inventory.Price[i],-10:0.00}P{itemTotal,4:0.00}");
-                    Thread.Sleep(100);
+                    Thread.Sleep(50);
                 }
 
                 Console.SetCursorPosition(2, inventory.CartItems.Count + 16);
                 Console.WriteLine(new string('═', 64));
-                Thread.Sleep(100);
+                Thread.Sleep(50);
                 Console.SetCursorPosition(2, inventory.CartItems.Count + 17);
                 Console.WriteLine($"| Subtotal: {total,50:0.00} |");
-                Thread.Sleep(100);
+                Thread.Sleep(50);
                 Console.SetCursorPosition(2, inventory.CartItems.Count + 18);
                 Console.WriteLine($"| VATABLE Sales: {total * 0.12,45:0.00} |");
-                Thread.Sleep(100);
+                Thread.Sleep(50);
                 Console.SetCursorPosition(2, inventory.CartItems.Count + 19);
                 Console.WriteLine($"| VAT EXEMPT Sales: {0,42:0.00} |"); // Placeholder, replace with actual value
-                Thread.Sleep(100);
+                Thread.Sleep(50);
                 Console.SetCursorPosition(2, inventory.CartItems.Count + 20);
                 Console.WriteLine($"| ZERO RATED Sales: {0,42:0.00} |"); // Placeholder, replace with actual value
-                Thread.Sleep(100);
+                Thread.Sleep(50);
                 Console.SetCursorPosition(2, inventory.CartItems.Count + 21);
                 Console.WriteLine($"| VAT Amount: {total * 0.12,48:0.00} |");
-                Thread.Sleep(100);
+                Thread.Sleep(50);
                 Console.SetCursorPosition(2, inventory.CartItems.Count + 22);
                 Console.WriteLine($"| Total: {total * 1.12,53:0.00} |");
-                Thread.Sleep(100);
+                Thread.Sleep(50);
                 Console.SetCursorPosition(2, inventory.CartItems.Count + 23);
 
                 // Additional detail
                 Console.WriteLine(new string('═', 64));
-                Thread.Sleep(100);
+                Thread.Sleep(50);
                 Console.SetCursorPosition(2, inventory.CartItems.Count + 24);
                 Console.WriteLine($"| Cashier: {cashierName,-52}|");
-                Thread.Sleep(100);
+                Thread.Sleep(50);
                 Console.SetCursorPosition(2, inventory.CartItems.Count + 25);
                 Console.WriteLine($"| Date Issued: {DateTime.Now,-48:yyyy-MM-dd HH:mm:ss}|");
-                Thread.Sleep(100);
+                Thread.Sleep(50);
                 Console.SetCursorPosition(2, inventory.CartItems.Count + 26);
                 Console.WriteLine($"| Valid Until: {DateTime.Now.AddHours(1),-48:yyyy-MM-dd HH:mm:ss}|");
-                Thread.Sleep(100);
+                Thread.Sleep(50);
                 Console.SetCursorPosition(2, inventory.CartItems.Count + 27);
                 Console.WriteLine(new string('═', 64));
-                Thread.Sleep(100);
+                Thread.Sleep(50);
                 Console.SetCursorPosition(2, inventory.CartItems.Count + 28);
-
-
-
-
-
-
-
             }
         }
 
@@ -854,7 +847,7 @@ namespace POS___POS
 
             Console.ResetColor();
             Console.WriteLine("=============================================");
-            Console.WriteLine("\n\n\n\nWelcome to our Point of Sale (POS) System!");
+            Console.WriteLine("\n\n\n\n\n\n\nWelcome to our Point of Sale (POS) System!");
             Console.WriteLine("This system is developed by the following individuals:");
 
             // Display developer information and contributions
